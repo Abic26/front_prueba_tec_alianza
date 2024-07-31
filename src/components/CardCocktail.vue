@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { defineProps } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 import Dialog from 'primevue/dialog';
 
 const props = defineProps({
@@ -9,6 +9,8 @@ const props = defineProps({
         required: true
     }
 });
+
+const emit = defineEmits(['add-drink']);
 
 const visible = ref(false);
 
@@ -24,6 +26,10 @@ const showIngredients = () => {
 
 const hideDialog = () => {
     visible.value = false;
+};
+
+const addDrink = (cocktail) => {
+    emit('add-drink', cocktail);
 };
 </script>
 
@@ -48,7 +54,7 @@ const hideDialog = () => {
                 <div class="flex gap-4 mt-1">
                     <Button label="Ingredients" icon="pi pi-list" severity="secondary" outlined class="w-full"
                         @click="showIngredients" />
-                    <Button v-if="isAuthenticated" label="Add Drink" icon="pi pi-plus" severity="secondary" outlined class="w-full" />
+                    <Button v-if="isAuthenticated" label="Add Drink" icon="pi pi-plus" severity="secondary" outlined class="w-full"  @click="addDrink(cocktail)" />
                 </div>
             </template>
         </Card>

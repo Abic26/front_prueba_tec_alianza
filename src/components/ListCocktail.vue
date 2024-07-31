@@ -6,6 +6,7 @@ import CardCocktail from '../components/CardCocktail.vue';
 
 const cocktails = ref([]);
 const searchCocktails = ref('coffee');
+const selectedCocktails = ref([]);
 
 const fetchCocktails = async () => {
     try {
@@ -24,6 +25,16 @@ const search = () => {
 onMounted(() => {
     fetchCocktails();
 });
+const addDrink = (cocktail) => {
+    const existingCocktail = selectedCocktails.value.find(item => item.strDrink === cocktail.strDrink);
+    if (existingCocktail) {
+        existingCocktail.quantity++;
+    } else {
+        selectedCocktails.value.push({ strDrink: cocktail.strDrink, quantity: 1 });
+    }
+    // Guardar la lista en el localStorage
+    localStorage.setItem('selectedCocktails', JSON.stringify(selectedCocktails.value));
+};
 </script>
 
 <template>
@@ -36,7 +47,8 @@ onMounted(() => {
             <Button label="Search" @click="search" /> <!-- Añadir el evento click -->
         </div>
         <div class="flex flex-wrap justify-center gap-5">
-            <CardCocktail v-for="(cocktail, index) in cocktails" :key="index" :cocktail="cocktail" />
+            <CardCocktail v-for="(cocktail, index) in cocktails" :key="index" :cocktail="cocktail"
+                @add-drink="addDrink" />
         </div>
     </div>
 </template>

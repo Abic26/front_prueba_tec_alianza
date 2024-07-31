@@ -12,15 +12,16 @@ const props = defineProps({
 
 const visible = ref(false);
 
-// Arreglo para almacenar las bebidas seleccionadas
 const selectedDrinks = ref([]);
 
-// Función para mostrar el diálogo de ingredientes
+const isAuthenticated = ref(localStorage.getItem('isAuthenticated') === 'true');
+
+
 const showIngredients = () => {
     visible.value = true;
 };
 
-// Función para ocultar el diálogo de ingredientes
+
 const hideDialog = () => {
     visible.value = false;
 };
@@ -47,12 +48,11 @@ const hideDialog = () => {
                 <div class="flex gap-4 mt-1">
                     <Button label="Ingredients" icon="pi pi-list" severity="secondary" outlined class="w-full"
                         @click="showIngredients" />
-                    <Button label="Add Drink" icon="pi pi-plus" severity="secondary" outlined class="w-full" />
+                    <Button v-if="isAuthenticated" label="Add Drink" icon="pi pi-plus" severity="secondary" outlined class="w-full" />
                 </div>
             </template>
         </Card>
 
-        <!-- Diálogo para mostrar los ingredientes -->
         <Dialog v-model:visible="visible" modal header="Ingredientes" :style="{ width: '25rem' }">
             <div class="text-surface-500 dark:text-surface-400 block mb-8">
                 <ul class="list-disc flex flex-col p-4 gap-2 opacity-50">

@@ -1,18 +1,27 @@
 <script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const navigateToDrinks = () => {
+    router.push('/drinks');
+};
 </script>
 <template>
-    <div class="p-24 flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
-        <div class="flex-1  flex justify-center">
-            <img src="https://thekitchencommunity.org/wp-content/uploads/2021/11/Mixed-Drinks.jpg" alt="Cocktail Image"
-                class="max-w-full h-auto rounded">
+    <div class="relative flex justify-center items-center h-screen bg-gray-800">
+        <div class="absolute inset-0">
+            <img src="https://thekitchencommunity.org/wp-content/uploads/2021/11/Mixed-Drinks.jpg"
+                alt="Cocktail Background" class="w-full h-full object-cover filter blur-sm">
         </div>
-        <div class="flex-1 p-4 bg-white w-full h-full">
-            <p>Welcome to our exclusive cocktail, liquor and coffee bar! Here, each visit is a unique experience, where
-                flavors and aromas combine to offer you unforgettable moments. Enjoy our wide selection of craft
-                cocktails, prepared with the freshest ingredients and innovative techniques, or be surprised by our
-                variety of fine liquors and our specialty coffee, perfect for any occasion. Relax in a cozy and
-                sophisticated atmosphere, and let us take your senses on a journey of pleasure and discovery. Cheers and
-                welcome!</p>
+        <div
+            class="relative z-10 p-8 bg-gray-900 bg-opacity-45 backdrop-blur-2xl rounded-lg max-w-2xl text-center flex flex-col gap-4">
+            <p class="text-gray-200 font-bold">
+                Welcome to our exclusive bar! Log in to explore our selection of drinks. Browse and search through our
+                extensive menu of craft cocktails, fine liquors, and specialty coffees. Enjoy your experience in a cozy
+                and sophisticated atmosphere. Cheers and welcome!
+            </p>
+            <Button label="Go To Drinks" icon="pi pi-arrow-right" iconPos="right" severity="help" raised
+                @click="navigateToDrinks" />
         </div>
     </div>
 </template>

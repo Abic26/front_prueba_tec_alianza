@@ -1,8 +1,8 @@
 <script setup>
+import Home from './page/Home.vue'
 </script>
 <template>
   <div>
-<h1>hola mundo del abic</h1>
+    <Home />
   </div>
 </template>
-

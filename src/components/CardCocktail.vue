@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { defineProps } from 'vue';
-import Dialog from 'primevue/dialog'; // Asegúrate de tener el componente Dialog de PrimeVue
+import Dialog from 'primevue/dialog';
 
 const props = defineProps({
     cocktail: {
@@ -9,16 +9,18 @@ const props = defineProps({
         required: true
     }
 });
-console.log(props.cocktail.strDrink)
-// Estado para controlar la visibilidad del diálogo
+
 const visible = ref(false);
 
-// Función para abrir el diálogo
+// Arreglo para almacenar las bebidas seleccionadas
+const selectedDrinks = ref([]);
+
+// Función para mostrar el diálogo de ingredientes
 const showIngredients = () => {
     visible.value = true;
 };
 
-// Función para cerrar el diálogo
+// Función para ocultar el diálogo de ingredientes
 const hideDialog = () => {
     visible.value = false;
 };
@@ -26,7 +28,7 @@ const hideDialog = () => {
 
 <template>
     <div>
-        <Card class="w-64 hidden rounded" >
+        <Card class="w-80 hidden rounded">
             <template #header>
                 <img class="rounded" :alt="cocktail.strDrink" :src="cocktail.strDrinkThumb" />
             </template>
@@ -43,8 +45,9 @@ const hideDialog = () => {
             </template>
             <template #footer>
                 <div class="flex gap-4 mt-1">
-                    <Button label="ingredientes" icon="pi pi-list" severity="secondary" outlined class="w-full"
+                    <Button label="Ingredients" icon="pi pi-list" severity="secondary" outlined class="w-full"
                         @click="showIngredients" />
+                    <Button label="Add Drink" icon="pi pi-plus" severity="secondary" outlined class="w-full" />
                 </div>
             </template>
         </Card>
@@ -58,12 +61,12 @@ const hideDialog = () => {
                     <li v-if="cocktail.strIngredient3">{{ cocktail.strIngredient3 }}</li>
                     <li v-if="cocktail.strIngredient4">{{ cocktail.strIngredient4 }}</li>
                     <li v-if="cocktail.strIngredient5">{{ cocktail.strIngredient5 }}</li>
-                    <!-- Agrega más ingredientes si es necesario -->
                 </ul>
             </div>
             <div class="flex justify-end gap-2">
                 <Button type="button" label="Cerrar" severity="secondary" @click="hideDialog" />
             </div>
         </Dialog>
+
     </div>
 </template>

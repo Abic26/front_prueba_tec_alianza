@@ -1,40 +1,18 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import CardCocktail from '../components/CardCocktail.vue';
-import Navbar from '../components/Navbar.vue'
-
-const cocktails = ref([]);
-const searchCocktails = ref('coffee');
-
-const fetchCocktails = async () => {
-    try {
-        const response = await axios.get(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${searchCocktails.value}`);
-        cocktails.value = response.data.drinks;
-        // console.log(cocktails.value);
-    } catch (error) {
-        console.error('Error fetching cocktails:', error);
-    }
-};
-
-const search = () => {
-    fetchCocktails();
-};
-
-onMounted(() => {
-    fetchCocktails();
-});
 </script>
-
 <template>
-<Navbar/>
-    <div class="flex flex-col gap-5">
-        <div class="flex flex-row justify-end items-center gap-2">
-            <InputText placeholder="Search Drinks" v-model="searchCocktails"/>
-            <Button label="Search" @click="search"/> <!-- Añadir el evento click -->
+    <div class="p-24 flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
+        <div class="flex-1  flex justify-center">
+            <img src="https://thekitchencommunity.org/wp-content/uploads/2021/11/Mixed-Drinks.jpg" alt="Cocktail Image"
+                class="max-w-full h-auto rounded">
         </div>
-        <div class="flex flex-wrap gap-5">
-            <CardCocktail v-for="(cocktail, index) in cocktails" :key="index" :cocktail="cocktail" />
+        <div class="flex-1 p-4 bg-white w-full h-full">
+            <p>Welcome to our exclusive cocktail, liquor and coffee bar! Here, each visit is a unique experience, where
+                flavors and aromas combine to offer you unforgettable moments. Enjoy our wide selection of craft
+                cocktails, prepared with the freshest ingredients and innovative techniques, or be surprised by our
+                variety of fine liquors and our specialty coffee, perfect for any occasion. Relax in a cozy and
+                sophisticated atmosphere, and let us take your senses on a journey of pleasure and discovery. Cheers and
+                welcome!</p>
         </div>
     </div>
 </template>

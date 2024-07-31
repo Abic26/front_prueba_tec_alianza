@@ -11,6 +11,9 @@ import Card from 'primevue/card';
 import Dialog from 'primevue/dialog';
 import Menubar from 'primevue/menubar';
 import Avatar from 'primevue/avatar';
+import Tooltip from 'primevue/tooltip';
+
+import router from './router'
 
 const app = createApp(App);
 
@@ -27,5 +30,7 @@ app.component('Card', Card);
 app.component('Dialog', Dialog);
 app.component('Menubar', Menubar);
 app.component('Avatar', Avatar);
+app.directive('tooltip', Tooltip);
 
+app.use(router)
 app.mount('#app');

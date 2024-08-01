@@ -25,6 +25,9 @@ import Accordion from 'primevue/accordion';
 import AccordionPanel from 'primevue/accordionpanel';
 import AccordionHeader from 'primevue/accordionheader';
 import AccordionContent from 'primevue/accordioncontent';
+import Toast from 'primevue/toast';
+import ToastService from 'primevue/toastservice';
+
 
 import router from './router'
 
@@ -56,8 +59,11 @@ app.component('Accordion', Accordion);
 app.component('AccordionPanel', AccordionPanel);
 app.component('AccordionHeader', AccordionHeader);
 app.component('AccordionContent', AccordionContent);
+app.component('Toast', Toast);
+app.use(ToastService);
 
 app.directive('tooltip', Tooltip);
 
+// app.use(PrimeVue);
 app.use(router)
 app.mount('#app');

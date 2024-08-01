@@ -1,12 +1,19 @@
 <script setup>
 import { ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
+import { useToast } from "primevue/usetoast";
+
 
 const router = useRouter();
 const username = ref('');
 const password = ref('');
+const name = ref('')
+const lastName = ref('')
 const rememberMe = ref(false);
-const isAuthenticated = ref(false); 
+const isAuthenticated = ref(false);
+const toast = useToast();
+
 
 
 isAuthenticated.value = localStorage.getItem('isAuthenticated') === 'true';
@@ -16,15 +23,42 @@ const login = () => {
         console.log('Usuario autenticado correctamente');
         isAuthenticated.value = true;
         localStorage.setItem('isAuthenticated', 'true');
-        router.push('/drinks').then(() => {
-            location.reload(); 
-        });
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Login successful', life: 3000 });
+
+        // Espera 2 segundos antes de redirigir
+        setTimeout(() => {
+            router.push('/drinks').then(() => {
+                location.reload();
+            });
+        }, 1000);
+
 
     } else {
         console.log('Credenciales incorrectas');
         isAuthenticated.value = false;
         localStorage.setItem('isAuthenticated', 'false');
+        toast.add({ severity: 'warn', summary: 'Error', detail: 'error login', life: 3000 });
     }
+};
+
+const registerUser = () => {
+    axios.post('http://127.0.0.1:8000/api/users', {
+        email: username.value,
+        password: password.value,
+        name: name.value,
+        last: lastName.value,
+        // otros campos si es necesario
+    })
+        .then(response => {
+            console.log('Usuario registrado:', response.data);
+            toast.add({ severity: 'success', summary: 'Success', detail: 'create user successful', life: 3000 });
+
+        })
+        .catch(error => {
+            console.error('Error al registrar el usuario:', error);
+            toast.add({ severity: 'warn', summary: 'Error', detail: 'error create user', life: 3000 });
+            // Manejar el error, mostrar un mensaje al usuario, etc.
+        });
 };
 
 watchEffect(() => {
@@ -71,16 +105,15 @@ watchEffect(() => {
                                 </div>
                             </div>
                         </TabPanel>
-
- 
+                        <!-- panel de registro -->
                         <TabPanel value="1">
                             <div class="flex flex-col gap-4 h-96 w-full justify-center">
                                 <div>
-                                    <InputText v-model="username" placeholder="Name"
+                                    <InputText v-model="name" placeholder="Name"
                                         class="w-full p-3 border border-gray-300 rounded" />
                                 </div>
                                 <div>
-                                    <InputText v-model="username" placeholder="Last Name"
+                                    <InputText v-model="lastName" placeholder="Last Name"
                                         class="w-full p-3 border border-gray-300 rounded" />
                                 </div>
                                 <div>
@@ -98,7 +131,7 @@ watchEffect(() => {
                                 <div>
                                     <Button label="Create Profile"
                                         class="w-full bg-red-500 text-white p-3 rounded hover:bg-red-600"
-                                        @click="login" />
+                                        @click="registerUser" />
                                 </div>
                             </div>
                         </TabPanel>
@@ -107,4 +140,6 @@ watchEffect(() => {
             </div>
         </div>
     </div>
+    <Toast />
+
 </template>

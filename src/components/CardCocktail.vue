@@ -1,7 +1,5 @@
 <script setup>
 import { ref } from 'vue';
-import { defineProps, defineEmits } from 'vue';
-import Dialog from 'primevue/dialog';
 
 const props = defineProps({
     cocktail: {
@@ -59,7 +57,7 @@ const addDrink = (cocktail) => {
             </template>
         </Card>
 
-        <Dialog v-model:visible="visible" modal header="Ingredientes" :style="{ width: '25rem' }">
+        <Dialog v-model:visible="visible" modal header="Ingredients" :style="{ width: '25rem' }">
             <div class="text-surface-500 dark:text-surface-400 block mb-8">
                 <ul class="list-disc flex flex-col p-4 gap-2 opacity-50">
                     <li v-if="cocktail.strIngredient1">{{ cocktail.strIngredient1 }}</li>

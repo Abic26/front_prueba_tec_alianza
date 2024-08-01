@@ -19,6 +19,13 @@ import TabPanels from 'primevue/tabpanels';
 import TabPanel from 'primevue/tabpanel';
 import Password from 'primevue/password';
 import Checkbox from 'primevue/checkbox';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Accordion from 'primevue/accordion';
+import AccordionPanel from 'primevue/accordionpanel';
+import AccordionHeader from 'primevue/accordionheader';
+import AccordionContent from 'primevue/accordioncontent';
+
 import router from './router'
 
 const app = createApp(App);
@@ -43,6 +50,13 @@ app.component('TabPanels', TabPanels);
 app.component('TabPanel', TabPanel);
 app.component('Password', Password);
 app.component('Checkbox', Checkbox);
+app.component('DataTable', DataTable);
+app.component('Column', Column);
+app.component('Accordion', Accordion);
+app.component('AccordionPanel', AccordionPanel);
+app.component('AccordionHeader', AccordionHeader);
+app.component('AccordionContent', AccordionContent);
+
 app.directive('tooltip', Tooltip);
 
 app.use(router)

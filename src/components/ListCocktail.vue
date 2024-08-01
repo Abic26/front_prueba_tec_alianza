@@ -34,6 +34,7 @@ const addDrink = (cocktail) => {
     }
     // Guardar la lista en el localStorage
     localStorage.setItem('selectedCocktails', JSON.stringify(selectedCocktails.value));
+    console.log(selectedCocktails.value);
 };
 </script>
 

@@ -8,40 +8,62 @@ const selectedCocktails = ref([]);
 const orders = ref([]);
 const activeIndex = ref([]);
 const toast = useToast();
+const loading = ref(false);
+const userId = Number(localStorage.getItem('user_id'));
+const apiUrlDDBB = import.meta.env.VITE_API_URL_DDBB;
+
+
 
 const axiosCocktails = async () => {
+    loading.value = true;
+
     try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/pending-orders/user/1`);
+        const response = await axios.get(`${apiUrlDDBB}/pending-orders/user/${userId}`);
         selectedCocktails.value = response.data.pendingOrders;
         console.log(response.data);
     } catch (error) {
         console.error('Error fetching cocktails:', error);
+    } finally {
+        loading.value = false;
+
     }
 };
 
 const axiosOrderDelivered = async () => {
+    loading.value = true;
+
     try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/orders-delivered/user/1`);
+        const response = await axios.get(`${apiUrlDDBB}/orders-delivered/user/${userId}`);
         orders.value = response.data
         // console.log(orders.value);
     } catch (error) {
         console.error('Error fetching cocktails:', error);
+    } finally {
+        loading.value = false;
+
     }
 };
 
 const deleteOrder = async (orderId) => {
+    loading.value = true;
+
     try {
-        await axios.delete(`http://127.0.0.1:8000/api/pending-orders/${orderId}`);
+        await axios.delete(`${apiUrlDDBB}/pending-orders/${orderId}`);
         // Eliminar la orden de la lista localmente
         selectedCocktails.value = selectedCocktails.value.filter(order => order.id !== orderId);
         toast.add({ severity: 'success', summary: 'Success', detail: 'Your drink was removed from your order', life: 3000 });
     } catch (error) {
         console.error('Error deleting order:', error);
         toast.add({ severity: 'warn', summary: 'Error', detail: 'error deleting', life: 3000 });
+    } finally {
+        loading.value = false;
+
     }
 };
 
 const axiosAddOrdesDelivered = async () => {
+    loading.value = true;
+
     console.log(selectedCocktails.value);
 
     const transformedData = selectedCocktails.value.reduce((acc, item) => {
@@ -56,7 +78,7 @@ const axiosAddOrdesDelivered = async () => {
 
     console.log(transformedData);
 
-    axios.post('http://127.0.0.1:8000/api/orders-delivered', transformedData)
+    axios.post(`${apiUrlDDBB}/orders-delivered`, transformedData)
         .then(response => {
             console.log('Pedidos entregados registrados:', response.data);
             axiosCocktails()
@@ -69,7 +91,10 @@ const axiosAddOrdesDelivered = async () => {
             toast.add({ severity: 'warn', summary: 'Error', detail: 'Error saving your order', life: 3000 });
 
             // Manejar el error, mostrar un mensaje al usuario, etc.
-        });
+        }).finally(() => {
+            loading.value = false;
+
+        })
 }
 
 onMounted(() => {
@@ -80,6 +105,10 @@ onMounted(() => {
 </script>
 
 <template>
+    <div v-if="loading" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <ProgressSpinner class="w-12 h-12" strokeWidth="8" fill="transparent" animationDuration=".5s"
+            aria-label="Custom ProgressSpinner" />
+    </div>
     <div>
         <label class="font-medium">Pending Orders</label>
         <br><br>

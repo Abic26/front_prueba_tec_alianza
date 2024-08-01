@@ -11,18 +11,27 @@ const password = ref('');
 const name = ref('')
 const lastName = ref('')
 const rememberMe = ref(false);
-const isAuthenticated = ref(false);
+const loading = ref(false);
 const toast = useToast();
+const apiUrlDDBB = import.meta.env.VITE_API_URL_DDBB;
 
 
 
-isAuthenticated.value = localStorage.getItem('isAuthenticated') === 'true';
+const login = async () => {
+    loading.value = true;
+    try {
+        const response = await axios.post(`${apiUrlDDBB}/login`, {
+            email: username.value,
+            password: password.value
+        });
 
-const login = () => {
-    if (username.value === 'admin' && password.value === 'admin') {
-        console.log('Usuario autenticado correctamente');
-        isAuthenticated.value = true;
-        localStorage.setItem('isAuthenticated', 'true');
+        const token = response.data.token;
+        const user_id = response.data.user.id
+        console.log(response.data.user.id);
+
+        localStorage.setItem('token', token);  // Guarda el token en el localStorage
+        localStorage.setItem('isAuthenticated', true);
+        localStorage.setItem('user_id', user_id);
         toast.add({ severity: 'success', summary: 'Success', detail: 'Login successful', life: 3000 });
 
         // Espera 2 segundos antes de redirigir
@@ -31,18 +40,17 @@ const login = () => {
                 location.reload();
             });
         }, 1000);
-
-
-    } else {
-        console.log('Credenciales incorrectas');
-        isAuthenticated.value = false;
-        localStorage.setItem('isAuthenticated', 'false');
-        toast.add({ severity: 'warn', summary: 'Error', detail: 'error login', life: 3000 });
+    } catch (error) {
+        console.error('Error during login:', error);
+        toast.add({ severity: 'warn', summary: 'Error', detail: 'Invalid login credentials', life: 3000 });
+    }finally {
+        loading.value = false;
     }
+
 };
 
 const registerUser = () => {
-    axios.post('http://127.0.0.1:8000/api/users', {
+    axios.post(`${apiUrlDDBB}/users`, {
         email: username.value,
         password: password.value,
         name: name.value,
@@ -50,6 +58,8 @@ const registerUser = () => {
         // otros campos si es necesario
     })
         .then(response => {
+            loading.value = true;
+
             console.log('Usuario registrado:', response.data);
             toast.add({ severity: 'success', summary: 'Success', detail: 'create user successful', life: 3000 });
 
@@ -58,17 +68,29 @@ const registerUser = () => {
             console.error('Error al registrar el usuario:', error);
             toast.add({ severity: 'warn', summary: 'Error', detail: 'error create user', life: 3000 });
             // Manejar el error, mostrar un mensaje al usuario, etc.
-        });
+        }).finally(() => {
+
+            loading.value = false;
+        })
+
 };
 
+const isAuthenticated = ref(localStorage.getItem('isAuthenticated') === 'true');
+
 watchEffect(() => {
-    localStorage.setItem('isAuthenticated', isAuthenticated.value);
+    if (!isAuthenticated.value) {
+        router.push('/login');
+    }
 });
 </script>
 
 
 
 <template>
+    <div v-if="loading" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <ProgressSpinner class="w-12 h-12" strokeWidth="8" fill="transparent" animationDuration=".5s"
+            aria-label="Custom ProgressSpinner" />
+    </div>
     <div class="flex justify-center p-6 sm:p-10 md:p-16 lg:p-36">
         <div class="flex flex-col md:flex-row justify-center rounded-md bg-zinc-900 shadow-lg max-w-4xl w-full">
             <div class="hidden md:block md:w-1/2">

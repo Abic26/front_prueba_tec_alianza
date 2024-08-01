@@ -9,12 +9,20 @@ import { useToast } from "primevue/usetoast";
 const cocktails = ref([]);
 const searchCocktails = ref('coffee');
 const selectedCocktails = ref([]);
+const loading = ref(false);
 const toast = useToast();
+const userId = Number(localStorage.getItem('user_id'));
+const apiUrlDDBB = import.meta.env.VITE_API_URL_DDBB;
+const apiUrlThecocktaildb = import.meta.env.VITE_API_URL_TheCocktailDB;
+
+
 
 
 const fetchCocktails = async () => {
+    loading.value = true;
+
     try {
-        const response = await axios.get(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${searchCocktails.value}`);
+        const response = await axios.get(`${apiUrlThecocktaildb}/json/v1/1/search.php?s=${searchCocktails.value}`);
         cocktails.value = response.data.drinks;
         toast.add({ severity: 'success', summary: 'Success', detail: 'loaded drinks list', life: 3000 });
 
@@ -23,6 +31,8 @@ const fetchCocktails = async () => {
         toast.add({ severity: 'warn', summary: 'Error', detail: 'error', life: 3000 });
 
         console.error('Error fetching cocktails:', error);
+    }finally{
+        loading.value = false;
     }
 };
 
@@ -34,9 +44,10 @@ onMounted(() => {
     fetchCocktails();
 });
 const addDrink = (cocktail) => {
+    console.log(userId);
     const existingCocktail = selectedCocktails.value.find(item => item.strDrink === cocktail.strDrink);
-    axios.post('http://127.0.0.1:8000/api/pending-orders', {
-        user_id: 1,
+    axios.post(`${apiUrlDDBB}/pending-orders`, {
+        user_id: userId,
         nameDrink: cocktail.strDrink,
         cantidad: 1,
         // otros campos si es necesario
@@ -57,6 +68,10 @@ const addDrink = (cocktail) => {
 </script>
 
 <template>
+    <div v-if="loading" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <ProgressSpinner class="w-12 h-12" strokeWidth="8" fill="transparent" animationDuration=".5s"
+            aria-label="Custom ProgressSpinner" />
+    </div>
     <div class="flex flex-col gap-5 p-24">
         <div class="flex flex-row justify-end items-start gap-2">
             <div class="flex flex-col items-center">

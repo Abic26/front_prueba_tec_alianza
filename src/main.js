@@ -27,6 +27,8 @@ import AccordionHeader from 'primevue/accordionheader';
 import AccordionContent from 'primevue/accordioncontent';
 import Toast from 'primevue/toast';
 import ToastService from 'primevue/toastservice';
+import ProgressSpinner from 'primevue/progressspinner';
+
 
 
 import router from './router'
@@ -60,6 +62,7 @@ app.component('AccordionPanel', AccordionPanel);
 app.component('AccordionHeader', AccordionHeader);
 app.component('AccordionContent', AccordionContent);
 app.component('Toast', Toast);
+app.component('ProgressSpinner', ProgressSpinner);
 app.use(ToastService);
 
 app.directive('tooltip', Tooltip);

@@ -106,7 +106,7 @@ watchEffect(() => {
                 <Tabs value="0">
                     <TabList>
                         <Tab value="0">Login</Tab>
-                        <Tab value="1">Registrer</Tab>
+                        <Tab value="1">Register</Tab>
                     </TabList>
                     <TabPanels>
                         <TabPanel value="0">

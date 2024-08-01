@@ -2,6 +2,8 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useToast } from "primevue/usetoast";
+import { useRouter } from 'vue-router';
+
 
 
 const selectedCocktails = ref([]);
@@ -11,6 +13,8 @@ const toast = useToast();
 const loading = ref(false);
 const userId = Number(localStorage.getItem('user_id'));
 const apiUrlDDBB = import.meta.env.VITE_API_URL_DDBB;
+const router = useRouter();
+
 
 
 
@@ -28,6 +32,9 @@ const axiosCocktails = async () => {
         console.log(response.data);
     } catch (error) {
         console.error('Error fetching cocktails:', error);
+        if (error.response.status === 401) {
+            router.push('/login')
+        }
     } finally {
         loading.value = false;
 
@@ -47,7 +54,11 @@ const axiosOrderDelivered = async () => {
         orders.value = response.data
         // console.log(orders.value);
     } catch (error) {
+        // console.error('Error fetching cocktails:', error);
         console.error('Error fetching cocktails:', error);
+        if (error.response.status === 401) {
+            router.push('/login')
+        }
     } finally {
         loading.value = false;
 
@@ -71,6 +82,9 @@ const deleteOrder = async (orderId) => {
     } catch (error) {
         console.error('Error deleting order:', error);
         toast.add({ severity: 'warn', summary: 'Error', detail: 'error deleting', life: 3000 });
+        if (error.response.status === 401) {
+            router.push('/login')
+        }
     } finally {
         loading.value = false;
 
@@ -111,7 +125,9 @@ const axiosAddOrdesDelivered = async () => {
         .catch(error => {
             console.error('Error al registrar los pedidos entregados:', error);
             toast.add({ severity: 'warn', summary: 'Error', detail: 'Error saving your order', life: 3000 });
-
+            if (error.response.status === 401) {
+                router.push('/login')
+            }
             // Manejar el error, mostrar un mensaje al usuario, etc.
         }).finally(() => {
             loading.value = false;

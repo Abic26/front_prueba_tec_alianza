@@ -50,9 +50,9 @@ const addDrink = (cocktail) => {
             </template>
             <template #footer>
                 <div class="flex gap-4 mt-1">
-                    <Button label="Ingredients" icon="pi pi-list" severity="secondary" outlined class="w-full"
+                    <Button severity="secondary" label="Ingredients" icon="pi pi-list" outlined class="w-full"
                         @click="showIngredients" />
-                    <Button v-if="isAuthenticated" label="Add Drink" icon="pi pi-plus" severity="secondary" outlined class="w-full"  @click="addDrink(cocktail)" />
+                    <Button v-if="isAuthenticated" label="Add Drink" icon="pi pi-plus" severity="info" outlined class="w-full"  @click="addDrink(cocktail)" />
                 </div>
             </template>
         </Card>
@@ -68,7 +68,7 @@ const addDrink = (cocktail) => {
                 </ul>
             </div>
             <div class="flex justify-end gap-2">
-                <Button type="button" label="Cerrar" severity="secondary" @click="hideDialog" />
+                <Button type="button" label="Close" severity="secondary" @click="hideDialog" />
             </div>
         </Dialog>
 

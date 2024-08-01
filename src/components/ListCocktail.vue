@@ -45,11 +45,15 @@ const addDrink = (cocktail) => {
     loading.value = true;
 
     const existingCocktail = selectedCocktails.value.find(item => item.strDrink === cocktail.strDrink);
+    const token = localStorage.getItem('token')
 
     $.ajax({
         url: `${apiUrlDDBB}/pending-orders`,
         type: 'POST',
         contentType: 'application/json',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
         data: JSON.stringify({
             user_id: userId,
             nameDrink: cocktail.strDrink,

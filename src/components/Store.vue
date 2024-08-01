@@ -16,9 +16,14 @@ const apiUrlDDBB = import.meta.env.VITE_API_URL_DDBB;
 
 const axiosCocktails = async () => {
     loading.value = true;
+    const token = localStorage.getItem('token')
 
     try {
-        const response = await axios.get(`${apiUrlDDBB}/pending-orders/user/${userId}`);
+        const response = await axios.get(`${apiUrlDDBB}/pending-orders/user/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         selectedCocktails.value = response.data.pendingOrders;
         console.log(response.data);
     } catch (error) {
@@ -31,9 +36,14 @@ const axiosCocktails = async () => {
 
 const axiosOrderDelivered = async () => {
     loading.value = true;
+    const token = localStorage.getItem('token')
 
     try {
-        const response = await axios.get(`${apiUrlDDBB}/orders-delivered/user/${userId}`);
+        const response = await axios.get(`${apiUrlDDBB}/orders-delivered/user/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         orders.value = response.data
         // console.log(orders.value);
     } catch (error) {
@@ -46,9 +56,15 @@ const axiosOrderDelivered = async () => {
 
 const deleteOrder = async (orderId) => {
     loading.value = true;
+    const token = localStorage.getItem('token')
+
 
     try {
-        await axios.delete(`${apiUrlDDBB}/pending-orders/${orderId}`);
+        await axios.delete(`${apiUrlDDBB}/pending-orders/${orderId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         // Eliminar la orden de la lista localmente
         selectedCocktails.value = selectedCocktails.value.filter(order => order.id !== orderId);
         toast.add({ severity: 'success', summary: 'Success', detail: 'Your drink was removed from your order', life: 3000 });
@@ -63,6 +79,8 @@ const deleteOrder = async (orderId) => {
 
 const axiosAddOrdesDelivered = async () => {
     loading.value = true;
+    const token = localStorage.getItem('token')
+
 
     // console.log(selectedCocktails.value);
 
@@ -78,7 +96,11 @@ const axiosAddOrdesDelivered = async () => {
 
     // console.log(transformedData);
 
-    axios.post(`${apiUrlDDBB}/orders-delivered`, transformedData)
+    axios.post(`${apiUrlDDBB}/orders-delivered`, transformedData, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             console.log('Pedidos entregados registrados:', response.data);
             axiosCocktails()

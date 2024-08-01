@@ -4,6 +4,8 @@ import { ref, watchEffect, onMounted } from "vue";
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import Store from './Store.vue'
+import eventBus from '../events/eventBus.js'
+
 
 const router = useRouter();
 const isAuthenticated = ref(localStorage.getItem('isAuthenticated') === 'true');
@@ -38,7 +40,7 @@ const updateMenuItems = () => {
             icon: 'pi pi-cart-plus',
             command: () => { visible.value = true; },
             visible: isAuthenticated.value,
-            totalOrderss: totalOrders.value || 0
+            totalOrderss: totalOrders.value
         },
         {
             label: '',
@@ -70,8 +72,9 @@ const axiosCocktails = async () => {
     }
 };
 onMounted(() => {
-    axiosCocktails()
-})
+    axiosCocktails();
+    eventBus.$on('order-updated', axiosCocktails); // Escuchar el evento
+});
 
 watchEffect(updateMenuItems);
 

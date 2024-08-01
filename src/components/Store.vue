@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useToast } from "primevue/usetoast";
 import { useRouter } from 'vue-router';
+import eventBus from '../events/eventBus.js'
 
 
 
@@ -80,11 +81,7 @@ const deleteOrder = async (orderId) => {
         // Eliminar la orden de la lista localmente
         selectedCocktails.value = selectedCocktails.value.filter(order => order.id !== orderId);
         toast.add({ severity: 'success', summary: 'Success', detail: 'Your drink was removed from your order', life: 3000 });
-        setTimeout(() => {
-
-            location.reload();
-
-        }, 100);
+        eventBus.$emit('order-updated');
     } catch (error) {
         console.error('Error deleting order:', error);
         toast.add({ severity: 'warn', summary: 'Error', detail: 'error deleting', life: 3000 });

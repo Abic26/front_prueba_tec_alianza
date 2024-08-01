@@ -2,6 +2,9 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useToast } from "primevue/usetoast";
+import { useRouter } from 'vue-router';
+import eventBus from '../events/eventBus.js'
+
 
 
 const selectedCocktails = ref([]);
@@ -11,18 +14,28 @@ const toast = useToast();
 const loading = ref(false);
 const userId = Number(localStorage.getItem('user_id'));
 const apiUrlDDBB = import.meta.env.VITE_API_URL_DDBB;
+const router = useRouter();
+
 
 
 
 const axiosCocktails = async () => {
     loading.value = true;
+    const token = localStorage.getItem('token')
 
     try {
-        const response = await axios.get(`${apiUrlDDBB}/pending-orders/user/${userId}`);
+        const response = await axios.get(`${apiUrlDDBB}/pending-orders/user/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         selectedCocktails.value = response.data.pendingOrders;
         console.log(response.data);
     } catch (error) {
         console.error('Error fetching cocktails:', error);
+        if (error.response.status === 401) {
+            router.push('/login')
+        }
     } finally {
         loading.value = false;
 
@@ -31,13 +44,23 @@ const axiosCocktails = async () => {
 
 const axiosOrderDelivered = async () => {
     loading.value = true;
+    const token = localStorage.getItem('token')
 
     try {
-        const response = await axios.get(`${apiUrlDDBB}/orders-delivered/user/${userId}`);
-        orders.value = response.data
-        // console.log(orders.value);
+        const response = await axios.get(`${apiUrlDDBB}/orders-delivered/user/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        console.log(response.data);
+        orders.value = response.data.sort((a, b) => b.id - a.id);
+        console.log(orders.value);        // console.log(orders.value);
     } catch (error) {
+        // console.error('Error fetching cocktails:', error);
         console.error('Error fetching cocktails:', error);
+        if (error.response.status === 401) {
+            router.push('/login')
+        }
     } finally {
         loading.value = false;
 
@@ -46,15 +69,25 @@ const axiosOrderDelivered = async () => {
 
 const deleteOrder = async (orderId) => {
     loading.value = true;
+    const token = localStorage.getItem('token')
+
 
     try {
-        await axios.delete(`${apiUrlDDBB}/pending-orders/${orderId}`);
+        await axios.delete(`${apiUrlDDBB}/pending-orders/${orderId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         // Eliminar la orden de la lista localmente
         selectedCocktails.value = selectedCocktails.value.filter(order => order.id !== orderId);
         toast.add({ severity: 'success', summary: 'Success', detail: 'Your drink was removed from your order', life: 3000 });
+        eventBus.$emit('order-updated');
     } catch (error) {
         console.error('Error deleting order:', error);
         toast.add({ severity: 'warn', summary: 'Error', detail: 'error deleting', life: 3000 });
+        if (error.response.status === 401) {
+            router.push('/login')
+        }
     } finally {
         loading.value = false;
 
@@ -63,6 +96,8 @@ const deleteOrder = async (orderId) => {
 
 const axiosAddOrdesDelivered = async () => {
     loading.value = true;
+    const token = localStorage.getItem('token')
+
 
     // console.log(selectedCocktails.value);
 
@@ -78,7 +113,11 @@ const axiosAddOrdesDelivered = async () => {
 
     // console.log(transformedData);
 
-    axios.post(`${apiUrlDDBB}/orders-delivered`, transformedData)
+    axios.post(`${apiUrlDDBB}/orders-delivered`, transformedData, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => {
             console.log('Pedidos entregados registrados:', response.data);
             axiosCocktails()
@@ -89,7 +128,9 @@ const axiosAddOrdesDelivered = async () => {
         .catch(error => {
             console.error('Error al registrar los pedidos entregados:', error);
             toast.add({ severity: 'warn', summary: 'Error', detail: 'Error saving your order', life: 3000 });
-
+            if (error.response.status === 401) {
+                router.push('/login')
+            }
             // Manejar el error, mostrar un mensaje al usuario, etc.
         }).finally(() => {
             loading.value = false;
@@ -143,7 +184,7 @@ onMounted(() => {
             </div>
             <Accordion v-else v-model:activeIndex="activeIndex">
                 <AccordionPanel v-for="(order, index) in orders" :key="order.id">
-                    <AccordionHeader>{{ 'Order ' + (index + 1) }}</AccordionHeader>
+                    <AccordionHeader>{{ 'Order ' + order.id }}</AccordionHeader>
                     <AccordionContent>
                         <div class="flex justify-between">
                             <label>{{ order.nameDrink }}</label>
@@ -155,5 +196,5 @@ onMounted(() => {
             </Accordion>
         </div>
     </div>
-    <Toast />
+    <Toast position="top-center" />
 </template>

@@ -3,6 +3,10 @@ import { ref, onMounted } from 'vue';
 import CardCocktail from '../components/CardCocktail.vue';
 import { useToast } from "primevue/usetoast";
 import $ from 'jquery';
+import { useRouter } from 'vue-router';
+import eventBus from '../events/eventBus.js'
+
+
 
 const cocktails = ref([]);
 const searchCocktails = ref('coffee');
@@ -12,6 +16,8 @@ const toast = useToast();
 const userId = Number(localStorage.getItem('user_id'));
 const apiUrlDDBB = import.meta.env.VITE_API_URL_DDBB;
 const apiUrlThecocktaildb = import.meta.env.VITE_API_URL_TheCocktailDB;
+const router = useRouter();
+
 
 const fetchCocktails = () => {
     loading.value = true;
@@ -45,11 +51,15 @@ const addDrink = (cocktail) => {
     loading.value = true;
 
     const existingCocktail = selectedCocktails.value.find(item => item.strDrink === cocktail.strDrink);
+    const token = localStorage.getItem('token')
 
     $.ajax({
         url: `${apiUrlDDBB}/pending-orders`,
         type: 'POST',
         contentType: 'application/json',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
         data: JSON.stringify({
             user_id: userId,
             nameDrink: cocktail.strDrink,
@@ -57,10 +67,14 @@ const addDrink = (cocktail) => {
         }),
         success: (response) => {
             toast.add({ severity: 'success', summary: 'Success', detail: 'Added drink to list', life: 3000 });
+            eventBus.$emit('order-updated');
         },
         error: (error) => {
             console.error('Error adding drink:', error);
             toast.add({ severity: 'warn', summary: 'Error', detail: 'Error adding drink', life: 3000 });
+            if (error.response.status === 401) {
+                router.push('/login')
+            }
         },
         complete: () => {
             loading.value = false;
@@ -88,6 +102,6 @@ const addDrink = (cocktail) => {
                 @add-drink="addDrink" />
         </div>
     </div>
-    <Toast />
+    <Toast position="top-center" />
 
 </template>

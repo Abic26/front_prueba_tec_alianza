@@ -106,67 +106,73 @@ watchEffect(() => {
                 <Tabs value="0">
                     <TabList>
                         <Tab value="0">Login</Tab>
-                        <Tab value="1">Registrer</Tab>
+                        <Tab value="1">Register</Tab>
                     </TabList>
                     <TabPanels>
                         <TabPanel value="0">
-                            <div class="flex flex-col gap-4 h-96 w-full justify-center">
-                                <div>
-                                    <InputText v-model="username" placeholder="Email"
-                                        class="w-full p-3 border border-gray-300 rounded" />
-                                </div>
-                                <div>
-                                    <Password v-model="password" placeholder="Password" toggleMask
-                                        class="w-full p-3 border border-gray-700 rounded" />
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <Checkbox v-model="rememberMe" binary />
-                                        <label for="rememberMe" class="ml-2 text-sm">remember me</label>
+                            <form>
+
+                                <div class="flex flex-col gap-4 h-96 w-full justify-center">
+                                    <div>
+                                        <InputText v-model="username" placeholder="Email"
+                                            class="w-full p-3 border border-gray-300 rounded" />
+                                    </div>
+                                    <div>
+                                        <Password v-model="password" placeholder="Password" toggleMask
+                                            class="w-full p-3 border border-gray-700 rounded" />
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <Checkbox v-model="rememberMe" binary />
+                                            <label for="rememberMe" class="ml-2 text-sm">remember me</label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <Button label="Log In"
+                                            class="w-full bg-red-500 text-white p-3 rounded hover:bg-red-600"
+                                            @click="login" />
                                     </div>
                                 </div>
-                                <div>
-                                    <Button label="Log In"
-                                        class="w-full bg-red-500 text-white p-3 rounded hover:bg-red-600"
-                                        @click="login" />
-                                </div>
-                            </div>
+                            </form>
                         </TabPanel>
                         <!-- panel de registro -->
                         <TabPanel value="1">
-                            <div class="flex flex-col gap-4 h-96 w-full justify-center">
-                                <div>
-                                    <InputText v-model="name" placeholder="Name"
-                                        class="w-full p-3 border border-gray-300 rounded" />
+                            <form>
+
+                                <div class="flex flex-col gap-4 h-96 w-full justify-center">
+                                    <div>
+                                        <InputText v-model="name" placeholder="Name"
+                                            class="w-full p-3 border border-gray-300 rounded" />
+                                    </div>
+                                    <div>
+                                        <InputText v-model="lastName" placeholder="Last Name"
+                                            class="w-full p-3 border border-gray-300 rounded" />
+                                    </div>
+                                    <div>
+                                        <InputText v-model="username" placeholder="Email"
+                                            class="w-full p-3 border border-gray-300 rounded" />
+                                    </div>
+                                    <div>
+                                        <Password v-model="password" placeholder="password" toggleMask
+                                            class="w-full p-3 border border-gray-700 rounded" />
+                                    </div>
+                                    <div>
+                                        <Password v-model="password" placeholder="Confirm password" toggleMask
+                                            class="w-full p-3 border border-gray-700 rounded" />
+                                    </div>
+                                    <div>
+                                        <Button label="Create Profile"
+                                            class="w-full bg-red-500 text-white p-3 rounded hover:bg-red-600"
+                                            @click="registerUser" />
+                                    </div>
                                 </div>
-                                <div>
-                                    <InputText v-model="lastName" placeholder="Last Name"
-                                        class="w-full p-3 border border-gray-300 rounded" />
-                                </div>
-                                <div>
-                                    <InputText v-model="username" placeholder="Email"
-                                        class="w-full p-3 border border-gray-300 rounded" />
-                                </div>
-                                <div>
-                                    <Password v-model="password" placeholder="password" toggleMask
-                                        class="w-full p-3 border border-gray-700 rounded" />
-                                </div>
-                                <div>
-                                    <Password v-model="password" placeholder="Confirm password" toggleMask
-                                        class="w-full p-3 border border-gray-700 rounded" />
-                                </div>
-                                <div>
-                                    <Button label="Create Profile"
-                                        class="w-full bg-red-500 text-white p-3 rounded hover:bg-red-600"
-                                        @click="registerUser" />
-                                </div>
-                            </div>
+                            </form>
                         </TabPanel>
                     </TabPanels>
                 </Tabs>
             </div>
         </div>
     </div>
-    <Toast />
+    <Toast position="top-center" />
 
 </template>

@@ -28,6 +28,8 @@ import AccordionContent from 'primevue/accordioncontent';
 import Toast from 'primevue/toast';
 import ToastService from 'primevue/toastservice';
 import ProgressSpinner from 'primevue/progressspinner';
+import Badge from 'primevue/badge';
+import OverlayBadge from 'primevue/overlaybadge';
 
 
 
@@ -63,6 +65,8 @@ app.component('AccordionHeader', AccordionHeader);
 app.component('AccordionContent', AccordionContent);
 app.component('Toast', Toast);
 app.component('ProgressSpinner', ProgressSpinner);
+app.component('Badge', Badge);
+app.component('OverlayBadge', OverlayBadge);
 app.use(ToastService);
 
 app.directive('tooltip', Tooltip);

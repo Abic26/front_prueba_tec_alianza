@@ -24,6 +24,7 @@ const fetchCocktails = () => {
         url: `${apiUrlThecocktaildb}/json/v1/1/search.php?s=${searchCocktails.value}`,
         type: 'GET',
         success: (response) => {
+            console.log(response.drinks);
             cocktails.value = response.drinks;
             toast.add({ severity: 'success', summary: 'Success', detail: 'Loaded drinks list', life: 3000 });
         },
@@ -65,6 +66,11 @@ const addDrink = (cocktail) => {
         }),
         success: (response) => {
             toast.add({ severity: 'success', summary: 'Success', detail: 'Added drink to list', life: 3000 });
+            setTimeout(() => {
+
+                location.reload();
+                ;
+            }, 100);
         },
         error: (error) => {
             console.error('Error adding drink:', error);
@@ -99,6 +105,6 @@ const addDrink = (cocktail) => {
                 @add-drink="addDrink" />
         </div>
     </div>
-    <Toast />
+    <Toast position="top-center" />
 
 </template>

@@ -51,8 +51,9 @@ const axiosOrderDelivered = async () => {
                 'Authorization': `Bearer ${token}`
             }
         });
-        orders.value = response.data
-        // console.log(orders.value);
+        console.log(response.data);
+        orders.value = response.data.sort((a, b) => b.id - a.id);
+        console.log(orders.value);        // console.log(orders.value);
     } catch (error) {
         // console.error('Error fetching cocktails:', error);
         console.error('Error fetching cocktails:', error);
@@ -79,6 +80,11 @@ const deleteOrder = async (orderId) => {
         // Eliminar la orden de la lista localmente
         selectedCocktails.value = selectedCocktails.value.filter(order => order.id !== orderId);
         toast.add({ severity: 'success', summary: 'Success', detail: 'Your drink was removed from your order', life: 3000 });
+        setTimeout(() => {
+
+            location.reload();
+
+        }, 100);
     } catch (error) {
         console.error('Error deleting order:', error);
         toast.add({ severity: 'warn', summary: 'Error', detail: 'error deleting', life: 3000 });
@@ -181,7 +187,7 @@ onMounted(() => {
             </div>
             <Accordion v-else v-model:activeIndex="activeIndex">
                 <AccordionPanel v-for="(order, index) in orders" :key="order.id">
-                    <AccordionHeader>{{ 'Order ' + (index + 1) }}</AccordionHeader>
+                    <AccordionHeader>{{ 'Order ' + order.id }}</AccordionHeader>
                     <AccordionContent>
                         <div class="flex justify-between">
                             <label>{{ order.nameDrink }}</label>
@@ -193,5 +199,5 @@ onMounted(() => {
             </Accordion>
         </div>
     </div>
-    <Toast />
+    <Toast position="top-center" />
 </template>

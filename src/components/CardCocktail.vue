@@ -52,20 +52,34 @@ const addDrink = (cocktail) => {
                 <div class="flex gap-4 mt-1">
                     <Button severity="secondary" label="Ingredients" icon="pi pi-list" outlined class="w-full"
                         @click="showIngredients" />
-                    <Button v-if="isAuthenticated" label="Add Drink" icon="pi pi-plus" severity="info" outlined class="w-full"  @click="addDrink(cocktail)" />
+                    <Button v-if="isAuthenticated" label="Add Drink" icon="pi pi-plus" severity="info" outlined
+                        class="w-full" @click="addDrink(cocktail)" />
                 </div>
             </template>
         </Card>
 
-        <Dialog v-model:visible="visible" modal header="Ingredients" :style="{ width: '25rem' }">
-            <div class="text-surface-500 dark:text-surface-400 block mb-8">
-                <ul class="list-disc flex flex-col p-4 gap-2 opacity-50">
-                    <li v-if="cocktail.strIngredient1">{{ cocktail.strIngredient1 }}</li>
-                    <li v-if="cocktail.strIngredient2">{{ cocktail.strIngredient2 }}</li>
-                    <li v-if="cocktail.strIngredient3">{{ cocktail.strIngredient3 }}</li>
-                    <li v-if="cocktail.strIngredient4">{{ cocktail.strIngredient4 }}</li>
-                    <li v-if="cocktail.strIngredient5">{{ cocktail.strIngredient5 }}</li>
-                </ul>
+        <Dialog v-model:visible="visible" modal header="Preparation" :style="{ width: '25rem' }">
+            <div class="flex justify-between">
+                <div class="text-surface-500 dark:text-surface-400 block mb-8">
+                    <label>Ingredients</label>
+                    <ul class="list-disc flex flex-col p-4 gap-2 opacity-50">
+                        <li v-if="cocktail.strIngredient1">{{ cocktail.strIngredient1 }}</li>
+                        <li v-if="cocktail.strIngredient2">{{ cocktail.strIngredient2 }}</li>
+                        <li v-if="cocktail.strIngredient3">{{ cocktail.strIngredient3 }}</li>
+                        <li v-if="cocktail.strIngredient4">{{ cocktail.strIngredient4 }}</li>
+                        <li v-if="cocktail.strIngredient5">{{ cocktail.strIngredient5 }}</li>
+                    </ul>
+                </div>
+                <div class="text-surface-500 dark:text-surface-400 block mb-8">
+                    <label>Quantity</label>
+                    <ul class="list-disc flex flex-col p-4 gap-2 opacity-50">
+                        <li v-if="cocktail.strMeasure1">{{ cocktail.strMeasure1 }}</li>
+                        <li v-if="cocktail.strMeasure2">{{ cocktail.strMeasure2 }}</li>
+                        <li v-if="cocktail.strMeasure3">{{ cocktail.strMeasure3 }}</li>
+                        <li v-if="cocktail.strMeasure4">{{ cocktail.strMeasure4 }}</li>
+                        <li v-if="cocktail.strMeasure5">{{ cocktail.strMeasure5 }}</li>
+                    </ul>
+                </div>
             </div>
             <div class="flex justify-end gap-2">
                 <Button type="button" label="Close" severity="secondary" @click="hideDialog" />

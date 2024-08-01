@@ -1,14 +1,18 @@
 <!-- navbar.vue -->
 <script setup>
-import { ref, watchEffect } from "vue";
+import { ref, watchEffect, onMounted } from "vue";
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 import Store from './Store.vue'
 
 const router = useRouter();
 const isAuthenticated = ref(localStorage.getItem('isAuthenticated') === 'true');
+const userId = Number(localStorage.getItem('user_id'));
+const apiUrlDDBB = import.meta.env.VITE_API_URL_DDBB;
 const items = ref([]);
 const visible = ref(false);
 const loading = ref(false);
+const totalOrders = ref()
 
 const updateMenuItems = () => {
     items.value = [
@@ -33,7 +37,8 @@ const updateMenuItems = () => {
             label: 'Order',
             icon: 'pi pi-cart-plus',
             command: () => { visible.value = true; },
-            visible: isAuthenticated.value
+            visible: isAuthenticated.value,
+            totalOrderss: totalOrders.value || 0
         },
         {
             label: '',
@@ -43,6 +48,30 @@ const updateMenuItems = () => {
         }
     ];
 };
+const axiosCocktails = async () => {
+    loading.value = true;
+    const token = localStorage.getItem('token')
+
+    try {
+        const response = await axios.get(`${apiUrlDDBB}/pending-orders/user/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        totalOrders.value = response.data.pendingOrders.length
+    } catch (error) {
+        console.error('Error fetching cocktails:', error);
+        if (error.response.status === 401) {
+            router.push('/login')
+        }
+    } finally {
+        loading.value = false;
+
+    }
+};
+onMounted(() => {
+    axiosCocktails()
+})
 
 watchEffect(updateMenuItems);
 
@@ -76,9 +105,18 @@ const logout = () => {
                         <span class="ml-2">{{ item.label }}</span>
                     </router-link>
                 </div>
-                <div v-else-if="item.command" @click="item.command" class="lg:flex lg:justify-center lg:items-center lg:cursor-pointer sm:flex sm:justify-start sm:items-start sm:cursor-pointer flex justify-end items-center cursor-pointer p-4">
-                    <span :class="item.icon" />
-                    <span class="ml-2">{{ item.label }}</span>
+                <div v-else-if="item.command" @click="item.command"
+                    class="lg:flex lg:justify-center lg:items-center lg:cursor-pointer sm:flex sm:justify-start sm:items-start sm:cursor-pointer flex justify-end items-center cursor-pointer p-4">
+                    <template v-if="item.totalOrderss !== undefined">
+                        <OverlayBadge :value="item.totalOrderss">
+                            <span :class="item.icon" />
+                            <span class="ml-2">{{ item.label }}</span>
+                        </OverlayBadge>
+                    </template>
+                    <template v-else>
+                        <span :class="item.icon" />
+                        <span class="ml-2">{{ item.label }}</span>
+                    </template>
                 </div>
             </template>
         </Menubar>

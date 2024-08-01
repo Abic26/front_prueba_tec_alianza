@@ -80,7 +80,7 @@ git push origin feature/nueva-funcionalidad
 
 ## Tecnologias
 
-- Para este proyecto se utilzo vue.js para el frontend, con el uso de tailwind para los estilos, primevue para componentes, alertas, botones, inputs, iconos, etc, para la logica se utilizo jquery y javascript.
+- Para este proyecto se utilzo vue.js para el frontend, con el uso de tailwind para los estilos, primevue para componentes, alertas, botones, inputs, iconos, etc, para la logica se utilizo jquery y javascript, para las peticiones a la api se hizo con ajasx y axios.
 
 ## Créditos
 

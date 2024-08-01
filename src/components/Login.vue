@@ -1,78 +1,83 @@
 <script setup>
 import { ref, watchEffect } from 'vue';
 import { useRouter } from 'vue-router';
-import axios from 'axios';
 import { useToast } from "primevue/usetoast";
-
+import $ from 'jquery';
 
 const router = useRouter();
 const username = ref('');
 const password = ref('');
-const name = ref('')
-const lastName = ref('')
+const name = ref('');
+const lastName = ref('');
 const rememberMe = ref(false);
 const loading = ref(false);
 const toast = useToast();
 const apiUrlDDBB = import.meta.env.VITE_API_URL_DDBB;
 
-
-
 const login = async () => {
     loading.value = true;
-    try {
-        const response = await axios.post(`${apiUrlDDBB}/login`, {
+    $.ajax({
+        url: `${apiUrlDDBB}/login`,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
             email: username.value,
             password: password.value
-        });
+        }),
+        success: (response) => {
+            const token = response.token;
+            const user_id = response.user.id;
+            // console.log(response.user.id);
 
-        const token = response.data.token;
-        const user_id = response.data.user.id
-        console.log(response.data.user.id);
-
-        localStorage.setItem('token', token);  // Guarda el token en el localStorage
-        localStorage.setItem('isAuthenticated', true);
-        localStorage.setItem('user_id', user_id);
-        toast.add({ severity: 'success', summary: 'Success', detail: 'Login successful', life: 3000 });
-
-        // Espera 2 segundos antes de redirigir
-        setTimeout(() => {
-            router.push('/drinks').then(() => {
-                location.reload();
-            });
-        }, 1000);
-    } catch (error) {
-        console.error('Error during login:', error);
-        toast.add({ severity: 'warn', summary: 'Error', detail: 'Invalid login credentials', life: 3000 });
-    }finally {
-        loading.value = false;
-    }
-
+            localStorage.setItem('token', token);
+            localStorage.setItem('isAuthenticated', true);
+            localStorage.setItem('user_id', user_id);
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Login successful', life: 3000 });
+            setTimeout(() => {
+                router.push('/drinks').then(() => {
+                    location.reload();
+                });
+            }, 1000);
+        },
+        error: (error) => {
+            console.error('Error during login:', error);
+            toast.add({ severity: 'warn', summary: 'Error', detail: 'Invalid login credentials', life: 3000 });
+        },
+        complete: () => {
+            loading.value = false;
+        }
+    });
 };
 
 const registerUser = () => {
-    axios.post(`${apiUrlDDBB}/users`, {
-        email: username.value,
-        password: password.value,
-        name: name.value,
-        last: lastName.value,
-        // otros campos si es necesario
-    })
-        .then(response => {
-            loading.value = true;
-
-            console.log('Usuario registrado:', response.data);
-            toast.add({ severity: 'success', summary: 'Success', detail: 'create user successful', life: 3000 });
-
-        })
-        .catch(error => {
+    loading.value = true;
+    $.ajax({
+        url: `${apiUrlDDBB}/users`,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            email: username.value,
+            password: password.value,
+            name: name.value,
+            last: lastName.value,
+        }),
+        success: (response) => {
+            console.log('Usuario registrado:', response);
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Create user successful', life: 3000 });
+            setTimeout(() => {
+                router.push('/login').then(() => {
+                    location.reload();
+                });
+            }, 1000);
+        },
+        error: (error) => {
             console.error('Error al registrar el usuario:', error);
-            toast.add({ severity: 'warn', summary: 'Error', detail: 'error create user', life: 3000 });
-            // Manejar el error, mostrar un mensaje al usuario, etc.
-        }).finally(() => {
-
+            toast.add({ severity: 'warn', summary: 'Error', detail: 'Error creating user', life: 3000 });
+        },
+        complete: () => {
             loading.value = false;
-        })
-
+        }
+    });
 };
 
 const isAuthenticated = ref(localStorage.getItem('isAuthenticated') === 'true');

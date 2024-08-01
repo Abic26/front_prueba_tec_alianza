@@ -64,7 +64,7 @@ const deleteOrder = async (orderId) => {
 const axiosAddOrdesDelivered = async () => {
     loading.value = true;
 
-    console.log(selectedCocktails.value);
+    // console.log(selectedCocktails.value);
 
     const transformedData = selectedCocktails.value.reduce((acc, item) => {
         let order = acc.find(o => o.id === item.user_id);
@@ -76,7 +76,7 @@ const axiosAddOrdesDelivered = async () => {
         return acc;
     }, []);
 
-    console.log(transformedData);
+    // console.log(transformedData);
 
     axios.post(`${apiUrlDDBB}/orders-delivered`, transformedData)
         .then(response => {

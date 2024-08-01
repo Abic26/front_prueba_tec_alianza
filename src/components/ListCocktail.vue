@@ -1,10 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
 import CardCocktail from '../components/CardCocktail.vue';
 import { useToast } from "primevue/usetoast";
-
-
+import $ from 'jquery';
 
 const cocktails = ref([]);
 const searchCocktails = ref('coffee');
@@ -15,25 +13,24 @@ const userId = Number(localStorage.getItem('user_id'));
 const apiUrlDDBB = import.meta.env.VITE_API_URL_DDBB;
 const apiUrlThecocktaildb = import.meta.env.VITE_API_URL_TheCocktailDB;
 
-
-
-
-const fetchCocktails = async () => {
+const fetchCocktails = () => {
     loading.value = true;
 
-    try {
-        const response = await axios.get(`${apiUrlThecocktaildb}/json/v1/1/search.php?s=${searchCocktails.value}`);
-        cocktails.value = response.data.drinks;
-        toast.add({ severity: 'success', summary: 'Success', detail: 'loaded drinks list', life: 3000 });
-
-        // console.log(cocktails.value);
-    } catch (error) {
-        toast.add({ severity: 'warn', summary: 'Error', detail: 'error', life: 3000 });
-
-        console.error('Error fetching cocktails:', error);
-    }finally{
-        loading.value = false;
-    }
+    $.ajax({
+        url: `${apiUrlThecocktaildb}/json/v1/1/search.php?s=${searchCocktails.value}`,
+        type: 'GET',
+        success: (response) => {
+            cocktails.value = response.drinks;
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Loaded drinks list', life: 3000 });
+        },
+        error: (error) => {
+            toast.add({ severity: 'warn', summary: 'Error', detail: 'Error fetching cocktails', life: 3000 });
+            console.error('Error fetching cocktails:', error);
+        },
+        complete: () => {
+            loading.value = false;
+        }
+    });
 };
 
 const search = () => {
@@ -43,26 +40,32 @@ const search = () => {
 onMounted(() => {
     fetchCocktails();
 });
+
 const addDrink = (cocktail) => {
-    console.log(userId);
+    loading.value = true;
+
     const existingCocktail = selectedCocktails.value.find(item => item.strDrink === cocktail.strDrink);
-    axios.post(`${apiUrlDDBB}/pending-orders`, {
-        user_id: userId,
-        nameDrink: cocktail.strDrink,
-        cantidad: 1,
-        // otros campos si es necesario
-    })
-        .then(response => {
-            // console.log('Usuario registrado:', response.data);
-            toast.add({ severity: 'success', summary: 'Success', detail: 'add drinks list', life: 3000 });
 
-        })
-        .catch(error => {
-            console.error('Error al registrar el usuario:', error);
-            toast.add({ severity: 'warn', summary: 'Error', detail: 'error deleting', life: 3000 });
-
-            // Manejar el error, mostrar un mensaje al usuario, etc.
-        });
+    $.ajax({
+        url: `${apiUrlDDBB}/pending-orders`,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            user_id: userId,
+            nameDrink: cocktail.strDrink,
+            cantidad: 1,
+        }),
+        success: (response) => {
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Added drink to list', life: 3000 });
+        },
+        error: (error) => {
+            console.error('Error adding drink:', error);
+            toast.add({ severity: 'warn', summary: 'Error', detail: 'Error adding drink', life: 3000 });
+        },
+        complete: () => {
+            loading.value = false;
+        }
+    });
 };
 
 </script>
